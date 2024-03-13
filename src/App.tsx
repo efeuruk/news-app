@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import * as api from "./api";
-
-type Article = {
-  source: string;
-  author: string;
-  title: string;
-};
+import { ArticleType } from "./types";
+import Article from "./components/Article";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { CircularProgress } from "@mui/material";
+import Interactions from "./components/Interactions";
 
 function App() {
-  const [newsData, setNewsData] = useState<Article[]>([]);
+  const [newsData, setNewsData] = useState<ArticleType[]>([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchFromAllResources();
@@ -17,31 +17,46 @@ function App() {
 
   const fetchFromAllResources = async () => {
     try {
-      const newsResponse = await api.newsApi.get("/top-headlines?country=us");
-      const newsData: Article[] = newsResponse.data.articles.map(article => ({
-        source: article.source.name,
-        author: article.author,
-        title: article.title,
-      }));
-
-      const guardianResponse = await api.guardianApi.get(
-        "/search?q=brexit&show-tags=contributor"
+      setLoading(true);
+      const newsResponse = await api.newsApi.get("/top-headlines", {
+        params: {
+          country: "us",
+        },
+      });
+      const newsData: ArticleType[] = newsResponse.data.articles.map(
+        article => ({
+          source: article.source.name,
+          author: article.author,
+          title: article.title,
+          date: article.publishedAt,
+        })
       );
-      const guardianData: Article[] =
+
+      const guardianResponse = await api.guardianApi.get("/search", {
+        params: {
+          q: "brexit",
+          "show-tags": "contributor",
+        },
+      });
+      const guardianData: ArticleType[] =
         guardianResponse.data.response.results.map(article => ({
           source: "The Guardian",
           author: article?.tags?.[0]?.webTitle || "No author",
           title: article.webTitle,
+          date: article.webPublicationDate,
         }));
 
-      const nytimesResponse = await api.nytimesApi.get("");
-      const nytimesData: Article[] = nytimesResponse.data.response.docs.map(
+      const nytimesResponse = await api.nytimesApi.get("", {
+        params: {},
+      });
+      const nytimesData: ArticleType[] = nytimesResponse.data.response.docs.map(
         article => ({
           source: article.source,
-          author: article.byline
+          author: article.byline.person.length
             ? `${article?.byline?.person?.[0]?.firstname} ${article?.byline?.person?.[0]?.lastname}`
             : "No author",
           title: article.headline.main,
+          date: article.pub_date,
         })
       );
 
@@ -49,21 +64,31 @@ function App() {
       const shuffledArray = combinedData.sort(() => Math.random() - 0.5);
 
       setNewsData(shuffledArray);
+      setLoading(false);
     } catch (err) {
       console.error(err);
     }
   };
 
+  const theme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
+
   return (
-    <div>
-      {newsData.slice(0, 10).map((article, index) => (
-        <div key={index}>
-          <h3>{article.title}</h3>
-          <p>{article.source}</p>
-          <p>{article.author}</p>
-        </div>
-      ))}
-    </div>
+    <ThemeProvider theme={theme}>
+      {isLoading ? (
+        <CircularProgress size={80} />
+      ) : (
+        <>
+          <Interactions />
+          {newsData.slice(0, 10).map((article, index) => (
+            <Article key={index} article={article} />
+          ))}
+        </>
+      )}
+    </ThemeProvider>
   );
 }
 
