@@ -3,6 +3,7 @@ import Article from "./Article";
 import { ArticleType } from "../types";
 import { CircularProgress } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext";
 
 type ArticlesProps = {
   newsData: ArticleType[];
@@ -15,7 +16,14 @@ const Articles: React.FC<ArticlesProps> = ({
   moveToNextPage,
   hasMore,
 }) => {
-  return (
+  const { isArticlesLoading } = useSearchFilterContext();
+  return isArticlesLoading ? (
+    <div
+      style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}
+    >
+      <CircularProgress size={60} />
+    </div>
+  ) : newsData.length > 0 ? (
     <InfiniteScroll
       next={() => moveToNextPage()}
       loader={<CircularProgress size={20} />}
@@ -26,6 +34,15 @@ const Articles: React.FC<ArticlesProps> = ({
         <Article key={index} article={article} />
       ))}
     </InfiniteScroll>
+  ) : (
+    !isArticlesLoading &&
+    newsData.length === 0 && (
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}
+      >
+        <h1>No articles found</h1>
+      </div>
+    )
   );
 };
 

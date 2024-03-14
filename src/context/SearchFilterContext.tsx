@@ -9,6 +9,8 @@ type SearchFilterContextType = {
   setCategory: (category: string) => void;
   source: string;
   setSource: (source: string) => void;
+  isArticlesLoading: boolean;
+  setArticlesLoading: (isArticlesLoading: boolean) => void;
 };
 
 export const SearchFilterContext = createContext<SearchFilterContextType>(
@@ -22,6 +24,7 @@ export const SearchFilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const [date, setDate] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
+  const [isArticlesLoading, setArticlesLoading] = useState(false);
 
   const contextValue = {
     search,
@@ -32,6 +35,8 @@ export const SearchFilterProvider: React.FC<{ children: React.ReactNode }> = ({
     setCategory,
     source,
     setSource,
+    isArticlesLoading,
+    setArticlesLoading,
   };
 
   return (
