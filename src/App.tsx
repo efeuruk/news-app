@@ -1,29 +1,34 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import * as api from "./api";
 import { ArticleType } from "./types";
-import Article from "./components/Article";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CircularProgress } from "@mui/material";
+import { SearchFilterProvider } from "./context/SearchFilterContext";
+import Articles from "./components/Articles";
 import Interactions from "./components/Interactions";
 
 function App() {
   const [newsData, setNewsData] = useState<ArticleType[]>([]);
   const [isLoading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchFromAllResources();
-  }, []);
+  // pagination
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchFromAllResources = async () => {
+  const fetchFromAllResources = useCallback(async () => {
     try {
-      setLoading(true);
-      const newsResponse = await api.newsApi.get("/top-headlines", {
+      if (page < 1) {
+        setLoading(true);
+      }
+      const newsApiResponse = await api.newsApi.get("/top-headlines", {
         params: {
           country: "us",
+          page,
+          pageSize: 10,
         },
       });
-      const newsData: ArticleType[] = newsResponse.data.articles.map(
+      const newsApiData: ArticleType[] = newsApiResponse.data.articles.map(
         article => ({
           source: article.source.name,
           author: article.author,
@@ -34,8 +39,9 @@ function App() {
 
       const guardianResponse = await api.guardianApi.get("/search", {
         params: {
-          q: "brexit",
+          q: "",
           "show-tags": "contributor",
+          currentPage: page,
         },
       });
       const guardianData: ArticleType[] =
@@ -47,7 +53,9 @@ function App() {
         }));
 
       const nytimesResponse = await api.nytimesApi.get("", {
-        params: {},
+        params: {
+          page,
+        },
       });
       const nytimesData: ArticleType[] = nytimesResponse.data.response.docs.map(
         article => ({
@@ -60,15 +68,24 @@ function App() {
         })
       );
 
-      const combinedData = [...newsData, ...guardianData, ...nytimesData];
+      const combinedData = [...newsApiData, ...guardianData, ...nytimesData];
       const shuffledArray = combinedData.sort(() => Math.random() - 0.5);
 
-      setNewsData(shuffledArray);
+      setHasMore(shuffledArray.length > 0);
+      setNewsData(prevData => [...prevData, ...shuffledArray]);
       setLoading(false);
     } catch (err) {
       console.error(err);
     }
+  }, [page]);
+
+  const moveToNextPage = () => {
+    setPage(prevPage => prevPage + 1);
   };
+
+  useEffect(() => {
+    fetchFromAllResources();
+  }, [fetchFromAllResources]);
 
   const theme = createTheme({
     palette: {
@@ -78,16 +95,20 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {isLoading ? (
-        <CircularProgress size={80} />
-      ) : (
-        <>
-          <Interactions />
-          {newsData.slice(0, 10).map((article, index) => (
-            <Article key={index} article={article} />
-          ))}
-        </>
-      )}
+      <SearchFilterProvider>
+        {isLoading ? (
+          <CircularProgress size={80} />
+        ) : (
+          <>
+            <Interactions />
+            <Articles
+              newsData={newsData}
+              moveToNextPage={moveToNextPage}
+              hasMore={hasMore}
+            />
+          </>
+        )}
+      </SearchFilterProvider>
     </ThemeProvider>
   );
 }
