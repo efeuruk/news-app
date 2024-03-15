@@ -16,7 +16,7 @@ const Content = () => {
   const [hasMore, setHasMore] = useState(true);
 
   // search and filters
-  const { search, setArticlesLoading } = useSearchFilterContext();
+  const { search, date, setArticlesLoading } = useSearchFilterContext();
 
   const fetchDataFromSources = async ({
     commonParams = {},
@@ -29,10 +29,10 @@ const Content = () => {
     guardianParams?: Record<string, any>;
     nytimesParams?: Record<string, any>;
   }) => {
-    const newsApiResponse = await api.newsApi.get("/top-headlines", {
+    const newsApiResponse = await api.newsApi.get("/everything", {
       params: {
-        country: "us",
         pageSize: 5,
+        qInTitle: "title",
         ...commonParams,
         ...newsParams,
       },
@@ -92,24 +92,29 @@ const Content = () => {
       if (page < 1) {
         setWholePageLoading(true);
       }
+
       const combinedData = await fetchDataFromSources({
-        commonParams: { page, q: search },
-        guardianParams: { currentPage: page },
+        commonParams: { page, ...(search.length && { q: search }) },
+        newsParams: { ...(date && { from: date, to: date }) },
+        guardianParams: {
+          currentPage: page,
+          ...(date && { "from-date": date, "to-date": date }),
+        },
+        nytimesParams: { ...(date && { begin_date: date, end_date: date }) },
       });
       const shuffledArray = shuffleArray(combinedData);
-
       setHasMore(shuffledArray.length > 0);
+
       if (search === "") {
         setNewsData(prevData => [...prevData, ...shuffledArray]);
       } else {
         if (page === 1) {
           setNewsData(shuffledArray);
-          console.log("search");
         } else {
-          console.log("search else");
           setNewsData(prevData => [...prevData, ...shuffledArray]);
         }
       }
+
       setWholePageLoading(false);
       setArticlesLoading(false);
     } catch (err) {
@@ -117,7 +122,7 @@ const Content = () => {
       setWholePageLoading(false);
       setArticlesLoading(false);
     }
-  }, [page, search, setArticlesLoading]);
+  }, [date, page, search, setArticlesLoading]);
 
   const moveToNextPage = () => {
     setPage(prevPage => prevPage + 1);
@@ -130,7 +135,7 @@ const Content = () => {
   useEffect(() => {
     setNewsData([]);
     setPage(1);
-  }, [search]);
+  }, [search, date]);
 
   return (
     <>

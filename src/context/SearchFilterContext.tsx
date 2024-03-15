@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { createContext, useState } from "react";
 
 type SearchFilterContextType = {
@@ -21,7 +22,7 @@ export const SearchFilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [search, setSearch] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(dayjs(new Date()).format("YYYY-MM-DD"));
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
   const [isArticlesLoading, setArticlesLoading] = useState(false);

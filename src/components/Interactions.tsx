@@ -1,6 +1,7 @@
 import React from "react";
 import Searchbar from "./Searchbar";
 import { Box } from "@mui/material";
+import DatePicker from "./DatePicker";
 
 const Interactions = () => {
   return (
@@ -14,7 +15,7 @@ const Interactions = () => {
       }}
     >
       <Searchbar />
-      <div>date filter</div>
+      <DatePicker />
       <div>category filter</div>
       <div>source filter</div>
     </Box>
