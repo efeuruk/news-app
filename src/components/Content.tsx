@@ -40,9 +40,10 @@ const Content = () => {
     const newsApiData: ArticleType[] =
       newsApiResponse?.data?.articles?.map((article: any) => ({
         source: article.source.name,
-        author: article.author,
+        author: article.author || "No author",
         title: article.title,
         date: article.publishedAt,
+        url: article.url,
       })) || [];
 
     const guardianResponse = await api.guardianApi.get("/search", {
@@ -59,6 +60,7 @@ const Content = () => {
         author: article?.tags?.[0]?.webTitle || "No author",
         title: article.webTitle,
         date: article.webPublicationDate,
+        url: article.webUrl,
       })) || [];
 
     // nytimesapi dooesn't let users to set page size
@@ -76,6 +78,7 @@ const Content = () => {
           : "No author",
         title: article.headline.main,
         date: article.pub_date,
+        url: article.web_url,
       })) || [];
 
     return [...newsApiData, ...guardianData, ...nytimesData];

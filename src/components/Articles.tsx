@@ -1,7 +1,7 @@
 import React from "react";
 import Article from "./Article";
 import { ArticleType } from "../types";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext";
 
@@ -30,9 +30,13 @@ const Articles: React.FC<ArticlesProps> = ({
       hasMore={hasMore}
       dataLength={newsData.length}
     >
-      {newsData.map((article, index) => (
-        <Article key={index} article={article} />
-      ))}
+      <Grid container spacing={2} alignItems="stretch">
+        {newsData.map((article, index) => (
+          <Grid item key={index} xs={12} sm={6} md={4}>
+            <Article article={article} />
+          </Grid>
+        ))}
+      </Grid>
     </InfiniteScroll>
   ) : (
     !isArticlesLoading &&

@@ -1,6 +1,6 @@
 import React from "react";
 import { ArticleType } from "../types";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Chip, Typography } from "@mui/material";
 
 type ArticleProps = {
   article: ArticleType;
@@ -9,14 +9,34 @@ type ArticleProps = {
 const Article: React.FC<ArticleProps> = ({ article }) => {
   const date = new Date(article.date);
   return (
-    <Card sx={{ mb: 1.5 }}>
-      <CardContent>
-        <Typography component={"h3"}>{article.title}</Typography>
-        <Typography>Article by {article.author}</Typography>
-        <Typography>{date.toDateString()}</Typography>
-        <Typography>{article.source}</Typography>
-      </CardContent>
-    </Card>
+    <a href={article.url} target="__blank" rel="noopener noreferrer">
+      <Card
+        sx={{
+          borderRadius: 2,
+          display: "flex",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <CardContent
+          sx={{
+            width: "100%",
+            padding: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography sx={{ mb: 1 }}>
+            {article.author} • {date.toDateString()}
+          </Typography>
+          <Typography component={"h3"} sx={{ mb: 1, fontWeight: "bold" }}>
+            {article.title}
+          </Typography>
+          <Chip label={article.source} />
+        </CardContent>
+      </Card>
+    </a>
   );
 };
 
