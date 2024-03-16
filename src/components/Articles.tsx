@@ -26,7 +26,11 @@ const Articles: React.FC<ArticlesProps> = ({
   ) : newsData.length > 0 ? (
     <InfiniteScroll
       next={() => moveToNextPage()}
-      loader={<CircularProgress size={20} />}
+      loader={
+        <div style={{ marginTop: "12px" }}>
+          <CircularProgress size={40} />
+        </div>
+      }
       hasMore={hasMore}
       dataLength={newsData.length}
     >

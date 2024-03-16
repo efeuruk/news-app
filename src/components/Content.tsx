@@ -16,7 +16,7 @@ const Content = () => {
   const [hasMore, setHasMore] = useState(true);
 
   // search and filters
-  const { search, date, setArticlesLoading } = useSearchFilterContext();
+  const { search, dateFilter, setArticlesLoading } = useSearchFilterContext();
 
   const fetchDataFromSources = async ({
     commonParams = {},
@@ -52,6 +52,7 @@ const Content = () => {
         "page-size": 5,
         ...commonParams,
         ...guardianParams,
+        // section
       },
     });
     const guardianData: ArticleType[] =
@@ -68,6 +69,7 @@ const Content = () => {
       params: {
         ...commonParams,
         ...nytimesParams,
+        // section_name
       },
     });
     const nytimesData: ArticleType[] =
@@ -95,13 +97,16 @@ const Content = () => {
 
       const combinedData = await fetchDataFromSources({
         commonParams: { page, ...(search.length && { q: search }) },
-        newsParams: { ...(date && { from: date, to: date }) },
+        newsParams: { ...(dateFilter && { from: dateFilter, to: dateFilter }) },
         guardianParams: {
           currentPage: page,
-          ...(date && { "from-date": date, "to-date": date }),
+          ...(dateFilter && { "from-date": dateFilter, "to-date": dateFilter }),
         },
-        nytimesParams: { ...(date && { begin_date: date, end_date: date }) },
+        nytimesParams: {
+          ...(dateFilter && { begin_date: dateFilter, end_date: dateFilter }),
+        },
       });
+
       const shuffledArray = shuffleArray(combinedData);
       setHasMore(shuffledArray.length > 0);
 
@@ -122,7 +127,7 @@ const Content = () => {
       setWholePageLoading(false);
       setArticlesLoading(false);
     }
-  }, [date, page, search, setArticlesLoading]);
+  }, [dateFilter, page, search, setArticlesLoading]);
 
   const moveToNextPage = () => {
     setPage(prevPage => prevPage + 1);
@@ -135,7 +140,7 @@ const Content = () => {
   useEffect(() => {
     setNewsData([]);
     setPage(1);
-  }, [search, date]);
+  }, [search, dateFilter]);
 
   return (
     <>

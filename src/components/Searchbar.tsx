@@ -14,6 +14,7 @@ const Searchbar = () => {
     <TextField
       label="Search Articles"
       variant="outlined"
+      fullWidth
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
         handleSearch(e.target.value);
       }}

@@ -1,4 +1,3 @@
-import React from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   DatePicker as MUIDatePicker,
@@ -8,15 +7,16 @@ import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext"
 import { Dayjs } from "dayjs";
 
 const DatePicker = () => {
-  const { setDate, setArticlesLoading } = useSearchFilterContext();
+  const { setDateFilter, setArticlesLoading } = useSearchFilterContext();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MUIDatePicker
         format="DD/MM/YYYY"
         disableFuture
+        slotProps={{ textField: { fullWidth: true } }}
         onChange={(date: Dayjs) => {
-          setDate(date.format("YYYY-MM-DD"));
+          setDateFilter(date.format("YYYY-MM-DD"));
           setArticlesLoading(true);
         }}
       />

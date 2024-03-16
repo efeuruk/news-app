@@ -4,12 +4,12 @@ import { createContext, useState } from "react";
 type SearchFilterContextType = {
   search: string;
   setSearch: (search: string) => void;
-  date: string;
-  setDate: (date: string) => void;
-  category: string;
-  setCategory: (category: string) => void;
-  source: string;
-  setSource: (source: string) => void;
+  dateFilter: string;
+  setDateFilter: (dateFilter: string) => void;
+  categoryFilter: string[];
+  setCategoryFilter: (categoryFilter: string[]) => void;
+  sourceFilter: string;
+  setSourceFilter: (setCategoryFilter: string) => void;
   isArticlesLoading: boolean;
   setArticlesLoading: (isArticlesLoading: boolean) => void;
 };
@@ -22,20 +22,22 @@ export const SearchFilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [search, setSearch] = useState("");
-  const [date, setDate] = useState(dayjs(new Date()).format("YYYY-MM-DD"));
-  const [category, setCategory] = useState("");
-  const [source, setSource] = useState("");
+  const [dateFilter, setDateFilter] = useState(
+    dayjs(new Date()).format("YYYY-MM-DD")
+  );
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
+  const [sourceFilter, setSourceFilter] = useState("");
   const [isArticlesLoading, setArticlesLoading] = useState(false);
 
   const contextValue = {
     search,
     setSearch,
-    date,
-    setDate,
-    category,
-    setCategory,
-    source,
-    setSource,
+    dateFilter,
+    setDateFilter,
+    categoryFilter,
+    setCategoryFilter,
+    sourceFilter,
+    setSourceFilter,
     isArticlesLoading,
     setArticlesLoading,
   };
