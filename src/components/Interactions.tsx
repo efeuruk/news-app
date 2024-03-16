@@ -2,6 +2,7 @@ import Searchbar from "./Searchbar";
 import DatePicker from "./DatePicker";
 import { Grid } from "@mui/material";
 import CategoryFilter from "./CategoryFilter";
+import SourceFilter from "./SourceFilter";
 
 const Interactions = () => {
   return (
@@ -16,7 +17,7 @@ const Interactions = () => {
         <CategoryFilter />
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <div>source filter</div>
+        <SourceFilter />
       </Grid>
     </Grid>
   );

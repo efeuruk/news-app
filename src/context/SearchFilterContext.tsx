@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { createContext, useState } from "react";
+import { SOURCES } from "../constants";
 
 type SearchFilterContextType = {
   search: string;
@@ -8,8 +9,8 @@ type SearchFilterContextType = {
   setDateFilter: (dateFilter: string) => void;
   categoryFilter: string[];
   setCategoryFilter: (categoryFilter: string[]) => void;
-  sourceFilter: string;
-  setSourceFilter: (setCategoryFilter: string) => void;
+  sourceFilter: string[];
+  setSourceFilter: (setCategoryFilter: string[]) => void;
   isArticlesLoading: boolean;
   setArticlesLoading: (isArticlesLoading: boolean) => void;
 };
@@ -26,7 +27,7 @@ export const SearchFilterProvider: React.FC<{ children: React.ReactNode }> = ({
     dayjs(new Date()).format("YYYY-MM-DD")
   );
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
-  const [sourceFilter, setSourceFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState<string[]>(SOURCES);
   const [isArticlesLoading, setArticlesLoading] = useState(false);
 
   const contextValue = {

@@ -14,10 +14,12 @@ const DatePicker = () => {
       <MUIDatePicker
         format="DD/MM/YYYY"
         disableFuture
-        slotProps={{ textField: { fullWidth: true } }}
-        onChange={(date: Dayjs) => {
-          setDateFilter(date.format("YYYY-MM-DD"));
-          setArticlesLoading(true);
+        slotProps={{ textField: { fullWidth: true, label: "Date" } }}
+        onChange={(date: Dayjs | null) => {
+          if (date) {
+            setDateFilter(date.format("YYYY-MM-DD"));
+            setArticlesLoading(true);
+          }
         }}
       />
     </LocalizationProvider>

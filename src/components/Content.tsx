@@ -16,10 +16,13 @@ const Content = () => {
   const [hasMore, setHasMore] = useState(true);
 
   // search and filters
-  const { search, dateFilter, categoryFilter, setArticlesLoading } =
-    useSearchFilterContext();
-
-  console.log(categoryFilter);
+  const {
+    search,
+    dateFilter,
+    categoryFilter,
+    sourceFilter,
+    setArticlesLoading,
+  } = useSearchFilterContext();
 
   const getData = async () => {
     const combinedData = await fetchDataFromSources({
@@ -28,12 +31,15 @@ const Content = () => {
       guardianParams: {
         currentPage: page,
         ...(dateFilter && { "from-date": dateFilter, "to-date": dateFilter }),
-        ...(categoryFilter.length && { section: categoryFilter.join(" AND ") }),
+        ...(categoryFilter.length && {
+          section: categoryFilter.join(" AND "),
+        }),
       },
       nytimesParams: {
         ...(dateFilter && { begin_date: dateFilter, end_date: dateFilter }),
         ...(categoryFilter.length && { fq: categoryFilter.join(" AND ") }),
       },
+      sourceFilter,
     });
 
     return shuffleArray(combinedData);
@@ -68,7 +74,14 @@ const Content = () => {
       console.error(err);
       stopLoadings();
     }
-  }, [dateFilter, categoryFilter, page, search, setArticlesLoading]);
+  }, [
+    dateFilter,
+    categoryFilter,
+    sourceFilter,
+    page,
+    search,
+    setArticlesLoading,
+  ]);
 
   const moveToNextPage = () => {
     setPage(prevPage => prevPage + 1);
@@ -81,7 +94,7 @@ const Content = () => {
   useEffect(() => {
     setNewsData([]);
     setPage(1);
-  }, [search, dateFilter]);
+  }, [search, dateFilter, sourceFilter, categoryFilter]);
 
   return (
     <>
