@@ -21,4 +21,14 @@ npm run dev
 
 ### With Docker:
 
-Coming soon!
+- Build the image
+
+```
+docker build -t news-app .
+```
+
+- Create the container
+
+```
+docker run -it -p 4000:4000 --name news-app-container news-app
+```

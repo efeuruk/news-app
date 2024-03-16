@@ -29,11 +29,7 @@ const Articles: React.FC<ArticlesProps> = ({
       next={() => {
         moveToNextPage();
       }}
-      loader={
-        <div style={{ marginTop: "12px" }}>
-          <CircularProgress size={40} />
-        </div>
-      }
+      loader={<CircularProgress size={40} />}
       hasMore={hasMore}
       dataLength={newsData.length}
     >
