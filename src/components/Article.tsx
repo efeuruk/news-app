@@ -16,6 +16,11 @@ const Article: React.FC<ArticleProps> = ({ article }) => {
           display: "flex",
           alignItems: "center",
           height: "100%",
+          "&:hover": {
+            boxShadow: 10,
+            transform: "scale(1.02)",
+            transition: "all 0.3s ease",
+          },
         }}
       >
         <CardContent

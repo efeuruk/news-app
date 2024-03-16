@@ -9,37 +9,51 @@ import { fetchDataFromSources, shuffleArray } from "../utils";
 
 const Content = () => {
   const [newsData, setNewsData] = useState<ArticleType[]>([]);
-  const [isWholePageLoading, setWholePageLoading] = useState(true);
+  const [isPageLoading, setPageLoading] = useState(true);
 
   // pagination
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
   // search and filters
-  const { search, dateFilter, setArticlesLoading } = useSearchFilterContext();
+  const { search, dateFilter, categoryFilter, setArticlesLoading } =
+    useSearchFilterContext();
+
+  console.log(categoryFilter);
+
+  const getData = async () => {
+    const combinedData = await fetchDataFromSources({
+      commonParams: { page, ...(search.length && { q: search }) },
+      newsParams: { ...(dateFilter && { from: dateFilter, to: dateFilter }) },
+      guardianParams: {
+        currentPage: page,
+        ...(dateFilter && { "from-date": dateFilter, "to-date": dateFilter }),
+        ...(categoryFilter.length && { section: categoryFilter.join(" AND ") }),
+      },
+      nytimesParams: {
+        ...(dateFilter && { begin_date: dateFilter, end_date: dateFilter }),
+        ...(categoryFilter.length && { fq: categoryFilter.join(" AND ") }),
+      },
+    });
+
+    return shuffleArray(combinedData);
+  };
+
+  const stopLoadings = () => {
+    setPageLoading(false);
+    setArticlesLoading(false);
+  };
 
   const doFetch = useCallback(async () => {
     try {
       if (page < 1) {
-        setWholePageLoading(true);
+        setPageLoading(true);
       }
 
-      const combinedData = await fetchDataFromSources({
-        commonParams: { page, ...(search.length && { q: search }) },
-        newsParams: { ...(dateFilter && { from: dateFilter, to: dateFilter }) },
-        guardianParams: {
-          currentPage: page,
-          ...(dateFilter && { "from-date": dateFilter, "to-date": dateFilter }),
-        },
-        nytimesParams: {
-          ...(dateFilter && { begin_date: dateFilter, end_date: dateFilter }),
-        },
-      });
-
-      const shuffledArray = shuffleArray(combinedData);
+      const shuffledArray = await getData();
       setHasMore(shuffledArray.length > 0);
 
-      if (search === "") {
+      if (search === "" && categoryFilter.length === 0) {
         setNewsData(prevData => [...prevData, ...shuffledArray]);
       } else {
         if (page === 1) {
@@ -49,14 +63,12 @@ const Content = () => {
         }
       }
 
-      setWholePageLoading(false);
-      setArticlesLoading(false);
+      stopLoadings();
     } catch (err) {
       console.error(err);
-      setWholePageLoading(false);
-      setArticlesLoading(false);
+      stopLoadings();
     }
-  }, [dateFilter, page, search, setArticlesLoading]);
+  }, [dateFilter, categoryFilter, page, search, setArticlesLoading]);
 
   const moveToNextPage = () => {
     setPage(prevPage => prevPage + 1);
@@ -73,7 +85,7 @@ const Content = () => {
 
   return (
     <>
-      {isWholePageLoading ? (
+      {isPageLoading ? (
         <CircularProgress size={80} />
       ) : (
         <div

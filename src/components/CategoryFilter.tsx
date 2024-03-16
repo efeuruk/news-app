@@ -8,14 +8,16 @@ import {
 } from "@mui/material";
 import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext";
 
-const categories = ["Sports", "Economy", "Politics", "Technology", "Health"];
+const categories = ["football", "economy", "politics", "technology", "health"];
 
 const CategoryFilter = () => {
-  const { categoryFilter, setCategoryFilter } = useSearchFilterContext();
+  const { categoryFilter, setCategoryFilter, setArticlesLoading } =
+    useSearchFilterContext();
 
   const handleChange = (event: SelectChangeEvent<typeof categoryFilter>) => {
     const value = event.target.value;
     setCategoryFilter(typeof value === "string" ? value.split(",") : value);
+    setArticlesLoading(true);
   };
 
   return (

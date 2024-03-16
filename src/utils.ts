@@ -36,7 +36,6 @@ export const fetchDataFromSources = async ({
       "page-size": 5,
       ...commonParams,
       ...guardianParams,
-      // section
     },
   });
   const guardianData: ArticleType[] =
@@ -53,7 +52,6 @@ export const fetchDataFromSources = async ({
     params: {
       ...commonParams,
       ...nytimesParams,
-      // section_name
     },
   });
   const nytimesData: ArticleType[] =

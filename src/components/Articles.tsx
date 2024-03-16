@@ -39,7 +39,7 @@ const Articles: React.FC<ArticlesProps> = ({
     >
       <Grid container spacing={2} alignItems="stretch">
         {newsData.map((article, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
+          <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
             <Article article={article} />
           </Grid>
         ))}
