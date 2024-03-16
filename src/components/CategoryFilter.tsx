@@ -7,8 +7,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext";
-
-const categories = ["football", "economy", "politics", "technology", "health"];
+import { CATEGORIES } from "../constants";
 
 const CategoryFilter = () => {
   const { categoryFilter, setCategoryFilter, setArticlesLoading } =
@@ -30,7 +29,7 @@ const CategoryFilter = () => {
         onChange={handleChange}
         renderValue={selected => selected.join(", ")}
       >
-        {categories.map(category => (
+        {CATEGORIES.map(category => (
           <MenuItem value={category} key={category}>
             <Checkbox checked={categoryFilter.indexOf(category) > -1} />
             {category}

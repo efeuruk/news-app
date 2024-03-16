@@ -9,8 +9,6 @@ import {
 import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext";
 import { SOURCES } from "../constants";
 
-const sources = SOURCES;
-
 const SourceFilter = () => {
   const { sourceFilter, setSourceFilter, setArticlesLoading } =
     useSearchFilterContext();
@@ -31,7 +29,7 @@ const SourceFilter = () => {
         onChange={handleChange}
         renderValue={selected => selected.join(", ")}
       >
-        {sources.map(source => (
+        {SOURCES.map(source => (
           <MenuItem value={source} key={source}>
             <Checkbox checked={sourceFilter.indexOf(source) > -1} />
             {source}
