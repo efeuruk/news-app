@@ -1,7 +1,7 @@
 import React from "react";
 import Article from "./Article";
 import { ArticleType } from "../types";
-import { CircularProgress, Grid } from "@mui/material";
+import { CircularProgress, Grid, Typography } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSearchFilterContext } from "../context/hooks/useSearchFilterContext";
 
@@ -44,11 +44,11 @@ const Articles: React.FC<ArticlesProps> = ({
   ) : (
     !isArticlesLoading &&
     newsData.length === 0 && (
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}
-      >
-        <h1>No articles found</h1>
-      </div>
+      <Grid item xs={12}>
+        <Typography component={"h2"} sx={{ fontSize: "40px" }}>
+          No articles found
+        </Typography>
+      </Grid>
     )
   );
 };

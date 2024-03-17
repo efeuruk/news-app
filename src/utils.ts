@@ -7,6 +7,8 @@ import { SOURCES } from "./constants";
 //  since we get data from guardian and nytimes separately
 const excludedDomains = "guardian.com,nytimes.com";
 
+const PAGE_SIZE = 10;
+
 export const fetchDataFromSources = async ({
   commonParams = {},
   newsParams = {},
@@ -27,7 +29,7 @@ export const fetchDataFromSources = async ({
   if (sourceFilter.includes("others")) {
     const newsApiResponse = await api.newsApi.get("/everything", {
       params: {
-        pageSize: 5,
+        pageSize: PAGE_SIZE,
         qInTitle: "title",
         excludeDomains: excludedDomains,
         ...commonParams,
@@ -48,7 +50,7 @@ export const fetchDataFromSources = async ({
     const guardianResponse = await api.guardianApi.get("/search", {
       params: {
         "show-tags": "contributor",
-        "page-size": 5,
+        "page-size": PAGE_SIZE,
         ...commonParams,
         ...guardianParams,
       },

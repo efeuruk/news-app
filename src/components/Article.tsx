@@ -25,11 +25,11 @@ const Article: React.FC<ArticleProps> = ({ article }) => {
       >
         <CardContent
           sx={{
-            width: "100%",
-            padding: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            width: "100%",
+            padding: 2,
           }}
         >
           <Typography sx={{ mb: 1 }}>
