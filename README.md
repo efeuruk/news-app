@@ -2,7 +2,7 @@
 
 The project is bootstraped with vite's [react-ts](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
 
-This is a news app for innoscripta's frontend take home challange. It uses three different api sources to fetch data, which are;
+This is a news app. It uses three different api sources to fetch data, which are;
 
 - [News Api](https://newsapi.org/)
 - [The Guardian](https://open-platform.theguardian.com/)
